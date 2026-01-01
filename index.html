@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaby</title>
+    <title>Gaby - Luxury Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -298,41 +298,160 @@
         }
         .friend-link:hover { background: rgba(0, 0, 0, 0.4); }
 
-        /* --- Controles de Audio --- */
-        .audio-control {
+        /* --- Nuevo Reproductor Desplegable --- */
+        #music-player {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            z-index: 200;
+            z-index: 500;
             background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: none; 
-            color: white;
-            transition: 0.3s;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 25px;
+            padding: 12px;
+            display: none; /* Se muestra después de entrar */
+            flex-direction: column;
+            gap: 10px;
+            width: 220px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(0);
         }
-        .audio-control:hover { background: rgba(255, 255, 255, 0.4); }
+
+        #music-player.collapsed {
+            width: 50px;
+            height: 50px;
+            padding: 5px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .player-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+
+        .collapsed .player-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .song-title {
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .control-btn {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 10px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.3);
+            appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .toggle-player {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        .collapsed .toggle-player {
+            display: block;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Elemento de Audio - Requiere archivo musica.mp3 en la misma carpeta -->
+    <!-- Elemento de Audio -->
     <audio id="bg-music" loop>
         <source src="musica.mp3" type="audio/mpeg">
         Tu navegador no soporta el elemento de audio.
     </audio>
 
-    <!-- Control de Audio -->
-    <div id="mute-btn" class="audio-control" onclick="toggleMute()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/>
-            <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/>
-            <path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182l-.707.707A3.489 3.489 0 0 1 9.025 8a3.489 3.489 0 0 1-1.025 2.475l.707.707z"/>
-            <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/>
-        </svg>
+    <!-- Reproductor Desplegable -->
+    <div id="music-player" class="collapsed" onclick="expandPlayer(event)">
+        <!-- Icono cuando está colapsado -->
+        <div class="toggle-player text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M6 13c0 1.105-1.12 2-2.5 2S1 14.105 1 13c0-1.104 1.12-2 2.5-2S6 11.896 6 13zm7-2c0 1.105-1.12 2-2.5 2S8 12.105 8 11c0-1.104 1.12-2 2.5-2S13 9.896 13 11z"/>
+                <path d="M9 13V2h1v1h3V2h1v7h-1V3h-3v10H9z"/>
+            </svg>
+        </div>
+
+        <div class="player-content">
+            <div class="flex justify-between items-center mb-1">
+                <span class="text-[10px] uppercase tracking-widest text-white/70">Reproduciendo</span>
+                <div class="cursor-pointer text-white/50 hover:text-white" onclick="collapsePlayer(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="song-title">Qué Onda Perdida</div>
+            
+            <div class="player-controls">
+                <div id="play-pause-btn" class="control-btn" onclick="togglePlay(event)">
+                    <!-- Icono Pausa (por defecto cargamos intentando reproducir) -->
+                    <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>
+                    </svg>
+                    <!-- Icono Play (oculto inicialmente) -->
+                    <svg id="play-icon" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="volume-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" viewBox="0 0 16 16">
+                    <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/>
+                </svg>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" oninput="changeVolume(event)">
+            </div>
+        </div>
     </div>
 
     <!-- Pantalla de Intro -->
@@ -372,7 +491,6 @@
             <div class="mb-8">
                 <h2 class="text-white text-xs uppercase tracking-[0.3em] font-semibold mb-6 opacity-80">Sobre mí</h2>
                 
-                <!-- Dos Columnas para Info -->
                 <div class="grid grid-cols-2 gap-4 px-4">
                     <div class="info-card">
                         <span class="text-[10px] uppercase text-white opacity-60">Nacionalidad</span>
@@ -394,7 +512,6 @@
                 <h3 class="text-white text-[10px] uppercase tracking-[0.4em] mb-6">Amigos</h3>
                 
                 <div class="grid grid-cols-3 gap-y-8 gap-x-2">
-                    <!-- Heis -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://xatimg.com/image/cu2N8TJYTYiv.jpg" alt="Heis" class="w-full h-full object-cover">
@@ -403,7 +520,6 @@
                         <a href="https://xat.me/heis" target="_blank" class="friend-link">Perfil</a>
                     </div>
 
-                    <!-- Yaaz -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://i.imgur.com/ThW77Zc.png" alt="Yaaz" class="w-full h-full object-cover">
@@ -412,7 +528,6 @@
                         <a href="https://xat.me/yaaz" target="_blank" class="friend-link">Perfil</a>
                     </div>
 
-                    <!-- Estela -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://xatimg.com/image/FwHBT0GtlIXu.png" alt="Estela" class="w-full h-full object-cover">
@@ -421,7 +536,6 @@
                         <a href="https://xat.me/estela" target="_blank" class="friend-link">Perfil</a>
                     </div>
 
-                    <!-- Paulina -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://xatimg.com/image/SfAtzGQLIvoR.jpg" alt="Paulina" class="w-full h-full object-cover">
@@ -430,7 +544,6 @@
                         <a href="https://xat.me/iPauLinaaa" target="_blank" class="friend-link">Perfil</a>
                     </div>
 
-                    <!-- Fabi -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://xatimg.com/image/nW55YBWRcnQW.jpg" alt="Fabi" class="w-full h-full object-cover">
@@ -439,7 +552,6 @@
                         <a href="https://xat.me/Fabiii9217" target="_blank" class="friend-link">Perfil</a>
                     </div>
 
-                    <!-- Ashley -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://xatimg.com/image/DqVrXU6x43Zm.png" alt="Ashley" class="w-full h-full object-cover">
@@ -454,37 +566,75 @@
 
     <script>
         const audio = document.getElementById('bg-music');
-        const muteBtn = document.getElementById('mute-btn');
+        const player = document.getElementById('music-player');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
 
         function startExperience() {
             const intro = document.getElementById('intro');
             const main = document.getElementById('main-content');
             
-            // Iniciar música
-            audio.play().catch(error => {
-                console.log("La reproducción automática fue bloqueada o falló:", error);
-            });
+            // Intentar reproducir música
+            audio.volume = 0.5;
+            const playPromise = audio.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Reproducción exitosa
+                    showPause();
+                }).catch(error => {
+                    // Bloqueado por el navegador
+                    showPlay();
+                    console.log("Reproducción bloqueada: requiere interacción manual en el reproductor.");
+                });
+            }
 
             intro.style.opacity = '0';
             setTimeout(() => {
                 intro.style.visibility = 'hidden';
                 main.style.visibility = 'visible';
                 main.style.opacity = '1';
-                muteBtn.style.display = 'block'; 
+                player.style.display = 'flex'; // Mostrar reproductor
             }, 1000);
         }
 
-        function toggleMute() {
-            if (audio.muted) {
-                audio.muted = false;
-                muteBtn.style.opacity = "1";
+        function togglePlay(e) {
+            e.stopPropagation();
+            if (audio.paused) {
+                audio.play();
+                showPause();
             } else {
-                audio.muted = true;
-                muteBtn.style.opacity = "0.5";
+                audio.pause();
+                showPlay();
             }
+        }
+
+        function showPlay() {
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+        }
+
+        function showPause() {
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+        }
+
+        function changeVolume(e) {
+            e.stopPropagation();
+            audio.volume = e.target.value;
+        }
+
+        function expandPlayer(e) {
+            if (player.classList.contains('collapsed')) {
+                player.classList.remove('collapsed');
+            }
+        }
+
+        function collapsePlayer(e) {
+            e.stopPropagation();
+            player.classList.add('collapsed');
         }
     </script>
 
 </body>
 </html>
-
