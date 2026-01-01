@@ -193,6 +193,7 @@
             height: 110px;
             left: 50%;
             margin-left: -10px;
+            outline: 1px solid transparent;
             position: absolute;
             top: -15px;
             transform: rotatey(100deg);
@@ -299,6 +300,7 @@
             width: 220px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(0);
         }
 
         #music-player.collapsed {
@@ -365,9 +367,9 @@
 </head>
 <body>
 
-    <!-- Elemento de Audio - Asegúrate que en GitHub se llame musica.mp3 -->
+    <!-- Elemento de Audio - Usando un servidor público fiable de Banda MS -->
     <audio id="bg-music" loop preload="auto">
-        <source src="musica.mp3" type="audio/mpeg">
+        <source src="https://ia801402.us.archive.org/34/items/banda-ms-el-color-de-tus-ojos/Banda%20MS%20-%20El%20Color%20De%20Tus%20Ojos.mp3" type="audio/mpeg">
     </audio>
 
     <!-- Reproductor -->
@@ -385,7 +387,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>
                 </div>
             </div>
-            <div id="display-song-title" class="song-title">Qué Onda Perdida</div>
+            <div id="display-song-title" class="song-title">El Color De Tus Ojos - Banda MS</div>
             
             <div class="player-controls">
                 <div id="play-pause-btn" class="cursor-pointer" onclick="togglePlay(event)">
@@ -456,25 +458,17 @@
         const audio = document.getElementById('bg-music');
         const player = document.getElementById('music-player');
         const songTitleDisplay = document.getElementById('display-song-title');
+        
+        let playRequestPending = false;
 
         // Detectar si el archivo no existe o falla
         audio.addEventListener('error', function() {
-            songTitleDisplay.innerText = "Error: musica.mp3 no hallado";
+            songTitleDisplay.innerText = "Error de audio";
             songTitleDisplay.style.color = "#ff85a1";
-            console.error("No se pudo cargar el archivo 'musica.mp3'. Revisa el nombre en el repositorio.");
         });
 
-        function startExperience() {
-            // Intentar cargar y sonar
-            audio.load();
-            audio.volume = 0.5;
-            
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(_ => { updateIcons(); })
-                .catch(error => { console.log("Bloqueado. Usa el reproductor."); updateIcons(); });
-            }
-
+        async function startExperience() {
+            // Ocultar Intro
             document.getElementById('intro').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('intro').style.visibility = 'hidden';
@@ -482,12 +476,38 @@
                 document.getElementById('main-content').style.opacity = '1';
                 player.style.display = 'flex';
             }, 1000);
+
+            // Iniciar reproducción (con volumen)
+            audio.volume = 0.5;
+            await handlePlay();
         }
 
-        function togglePlay(e) {
+        async function handlePlay() {
+            if (playRequestPending) return;
+            
+            try {
+                playRequestPending = true;
+                // Intentar reproducir directamente tras la interacción del botón "Entrar"
+                await audio.play();
+                updateIcons();
+            } catch (error) {
+                console.log("Reproducción automática prevenida o interrumpida.");
+                updateIcons();
+            } finally {
+                playRequestPending = false;
+            }
+        }
+
+        async function togglePlay(e) {
             e.stopPropagation();
-            if (audio.paused) { audio.play(); } else { audio.pause(); }
-            updateIcons();
+            if (playRequestPending) return;
+
+            if (audio.paused) {
+                await handlePlay();
+            } else {
+                audio.pause();
+                updateIcons();
+            }
         }
 
         function updateIcons() {
