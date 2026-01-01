@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaby</title>
+    <title>Gaby - Luxury Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -47,6 +47,12 @@
             transition: opacity 1s ease, visibility 1s;
         }
 
+        .intro-name-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+
         .name-intro {
             font-family: 'Great Vibes', cursive;
             font-size: 8rem;
@@ -55,9 +61,8 @@
             text-shadow: 
                 0 0 10px #FFFFFF,
                 0 0 20px #FFFFFF,
-                0 0 40px rgba(255, 255, 255, 0.6);
-            filter: drop-shadow(0 10px 15px rgba(255,255,255,0.4));
-            margin-bottom: 40px;
+                0 0 30px rgba(255, 255, 255, 0.5);
+            filter: drop-shadow(0 10px 15px rgba(255,255,255,0.3));
             animation: pulseGlow 2s ease-in-out infinite alternate;
         }
 
@@ -134,7 +139,6 @@
             overflow-y: auto;
         }
 
-        /* Ocultar scrollbar */
         .glass-card::-webkit-scrollbar {
             width: 0;
             display: none;
@@ -293,13 +297,49 @@
             transition: background 0.3s;
         }
         .friend-link:hover { background: rgba(0, 0, 0, 0.4); }
+
+        /* --- Controles de Audio --- */
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 200;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none; /* Se muestra después de entrar */
+            color: white;
+            transition: 0.3s;
+        }
+        .audio-control:hover { background: rgba(255, 255, 255, 0.4); }
     </style>
 </head>
 <body>
 
+    <!-- Elemento de Audio - Busca el archivo musica.mp3 en tu repo -->
+    <audio id="bg-music" loop>
+        <source src="musica.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <!-- Control de Audio -->
+    <div id="mute-btn" class="audio-control" onclick="toggleMute()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/>
+            <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/>
+            <path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182l-.707.707A3.489 3.489 0 0 1 9.025 8a3.489 3.489 0 0 1-1.025 2.475l.707.707z"/>
+            <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/>
+        </svg>
+    </div>
+
     <!-- Pantalla de Intro -->
     <div id="intro">
-        <h1 class="name-intro">Gaby</h1>
+        <div class="intro-name-container">
+            <h1 class="name-intro">Gaby</h1>
+        </div>
         <button class="btn-enter" onclick="startExperience()">Entrar</button>
     </div>
 
@@ -353,7 +393,6 @@
                 <h3 class="text-white text-[10px] uppercase tracking-[0.4em] mb-6">Amigos</h3>
                 
                 <div class="grid grid-cols-3 gap-y-8 gap-x-2">
-                    <!-- Heis -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://xatimg.com/image/cu2N8TJYTYiv.jpg" alt="Heis" class="w-full h-full object-cover">
@@ -362,7 +401,6 @@
                         <a href="https://xat.me/heis" target="_blank" class="friend-link">Perfil</a>
                     </div>
 
-                    <!-- Yaaz -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://i.imgur.com/ThW77Zc.png" alt="Yaaz" class="w-full h-full object-cover">
@@ -371,7 +409,6 @@
                         <a href="https://xat.me/yaaz" target="_blank" class="friend-link">Perfil</a>
                     </div>
 
-                    <!-- Estela -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://xatimg.com/image/FwHBT0GtlIXu.png" alt="Estela" class="w-full h-full object-cover">
@@ -380,7 +417,6 @@
                         <a href="https://xat.me/estela" target="_blank" class="friend-link">Perfil</a>
                     </div>
 
-                    <!-- Paulina -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://xatimg.com/image/SfAtzGQLIvoR.jpg" alt="Paulina" class="w-full h-full object-cover">
@@ -389,7 +425,6 @@
                         <a href="https://xat.me/iPauLinaaa" target="_blank" class="friend-link">Perfil</a>
                     </div>
 
-                    <!-- Fabi -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://xatimg.com/image/nW55YBWRcnQW.jpg" alt="Fabi" class="w-full h-full object-cover">
@@ -398,7 +433,6 @@
                         <a href="https://xat.me/Fabiii9217" target="_blank" class="friend-link">Perfil</a>
                     </div>
 
-                    <!-- Ashley -->
                     <div class="friend-item">
                         <div class="friend-circle">
                             <img src="https://xatimg.com/image/DqVrXU6x43Zm.png" alt="Ashley" class="w-full h-full object-cover">
@@ -412,18 +446,37 @@
     </div>
 
     <script>
+        const audio = document.getElementById('bg-music');
+        const muteBtn = document.getElementById('mute-btn');
+
         function startExperience() {
             const intro = document.getElementById('intro');
             const main = document.getElementById('main-content');
+            
+            // Iniciar música
+            audio.play().catch(error => {
+                console.log("La reproducción automática fue bloqueada o falló:", error);
+            });
+
             intro.style.opacity = '0';
             setTimeout(() => {
                 intro.style.visibility = 'hidden';
                 main.style.visibility = 'visible';
                 main.style.opacity = '1';
+                muteBtn.style.display = 'block'; 
             }, 1000);
+        }
+
+        function toggleMute() {
+            if (audio.muted) {
+                audio.muted = false;
+                muteBtn.style.opacity = "1";
+            } else {
+                audio.muted = true;
+                muteBtn.style.opacity = "0.5";
+            }
         }
     </script>
 
 </body>
 </html>
-
