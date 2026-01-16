@@ -63,7 +63,7 @@
 
         @keyframes pulseGlow {
             from { text-shadow: 0 0 10px #FFFFFF, 0 0 20px #FFFFFF; }
-            to { text-shadow: 0 0 20px #FFFFFF, 0 0 40px #FFFFFF, 0 0 60px rgba(255, 255, 255, 0.8); }
+            to { text-shadow: 0 0 20px #FFFFFF, 0 0 40px #FFFFFF, 0 0 60px rgba(255,255,255,0.8); }
         }
 
         .btn-enter {
@@ -398,7 +398,7 @@
                     <!-- Heis -->
                     <div class="friend-item">
                         <div class="friend-circle">
-                            <img src="https://xatimg.com/image/cu2N8TJYTYiv.jpg" alt="Heis" class="w-full h-full object-cover">
+                            <img src="https://xatimg.com/image/2w69Pmroq8vJ.gif" alt="Heis" class="w-full h-full object-cover">
                         </div>
                         <span class="text-white text-[10px] font-semibold mb-1">Heis</span>
                         <a href="https://xat.me/heis" target="_blank" class="friend-link">Perfil</a>
@@ -463,13 +463,14 @@
             const intro = document.getElementById('intro');
             const main = document.getElementById('main-content');
             
-            // Intentar reproducir música (debe ser activado por interacción de usuario)
+            // Intentar reproducir música
             audio.play().then(() => {
                 musicToggle.style.display = 'flex';
+                updateMusicIcons(false);
             }).catch(error => {
-                console.log("Autoplay bloqueado por el navegador. El botón de música permitirá activarlo.");
+                console.log("Autoplay bloqueado. El botón de música permitirá activarlo.");
                 musicToggle.style.display = 'flex';
-                updateMusicIcons(true); // Mostrar icono de play si no arrancó
+                updateMusicIcons(true);
             });
             
             intro.style.opacity = '0';
