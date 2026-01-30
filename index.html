@@ -479,9 +479,23 @@
             }
         }
     </script>
+<script>
+document.addEventListener('contextmenu', e => e.preventDefault());
 
+document.addEventListener('keydown', function (e) {
+    // Ctrl+U
+    if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) e.preventDefault();
+
+    // Ctrl+Shift+I (DevTools)
+    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
+
+    // F12
+    if (e.key === 'F12') e.preventDefault();
+});
+</script>
 </body>
 </html>
+
 
 
 
