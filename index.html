@@ -12,6 +12,8 @@
             --lilac: #C8A2C8;       /* Lila clásico */
             --blue: #4169E1;        /* Azul real */
             --dark-lilac: #9B59B6;  /* Lila oscuro para contraste */
+            --red: #FF6B6B;         /* Rojo */
+            --turquoise: #40E0D0;   /* Turquesa */
         }
 
         /* --- Estilos Base y Fondo --- */
@@ -97,7 +99,7 @@
                 0 0 50px rgba(65, 105, 225, 0.3);
         }
 
-        /* --- MARIPOSAS EN COLORES EXACTOS --- */
+        /* --- MARIPOSAS CON FÍSICA MEJORADA --- */
         .butterfly-world {
             position: fixed;
             inset: 0;
@@ -108,102 +110,72 @@
 
         .butterfly {
             position: absolute;
-            width: 40px;
-            height: 40px;
             pointer-events: none;
-            opacity: 0.8;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             filter: drop-shadow(0 0 6px currentColor);
-            animation: floatButterfly 20s linear infinite;
+            will-change: transform;
         }
 
-        .butterfly::before,
-        .butterfly::after {
-            content: '';
-            position: absolute;
-            border-radius: 70% 30% 80% 20% / 60% 40% 60% 40%;
+        .butterfly img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            animation: gentleFlap 1.5s ease-in-out infinite;
         }
 
-        .butterfly::before {
-            width: 28px;
-            height: 40px;
-            left: 2px;
-            top: 0;
-            transform: rotate(45deg);
-            transform-origin: right center;
-            animation: flapLeft 0.7s ease-in-out infinite alternate;
+        /* Filtros de color para los nuevos colores */
+        .butterfly.black img {
+            filter: 
+                brightness(0.4) 
+                contrast(1.5)
+                saturate(0.7)
+                drop-shadow(0 0 5px rgba(0, 0, 0, 0.6));
         }
 
-        .butterfly::after {
-            width: 28px;
-            height: 40px;
-            right: 2px;
-            top: 0;
-            transform: rotate(-45deg);
-            transform-origin: left center;
-            animation: flapRight 0.7s ease-in-out infinite alternate;
+        .butterfly.blue img {
+            filter: 
+                sepia(1) 
+                hue-rotate(200deg) 
+                saturate(1.8) 
+                brightness(1.1)
+                drop-shadow(0 0 6px var(--blue));
         }
 
-        .butterfly .body {
-            position: absolute;
-            width: 4px;
-            height: 20px;
-            background: white;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 2px;
-            box-shadow: 0 0 5px white;
+        .butterfly.red img {
+            filter: 
+                sepia(1) 
+                hue-rotate(350deg) 
+                saturate(2) 
+                brightness(1.1)
+                drop-shadow(0 0 6px var(--red));
         }
 
-        /* COLORES EXACTOS PARA LAS MARIPOSAS */
-        .butterfly.black {
-            color: rgba(0, 0, 0, 0.7);
-            filter: drop-shadow(0 0 8px rgba(0,0,0,0.5));
-        }
-        .butterfly.lilac {
-            color: var(--lilac);
-            filter: drop-shadow(0 0 10px var(--lilac));
-        }
-        .butterfly.blue {
-            color: var(--blue);
-            filter: drop-shadow(0 0 10px var(--blue));
-        }
-        .butterfly.white {
-            color: rgba(255, 255, 255, 0.6);
-            filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
+        .butterfly.turquoise img {
+            filter: 
+                sepia(1) 
+                hue-rotate(160deg) 
+                saturate(1.8) 
+                brightness(1.1)
+                drop-shadow(0 0 6px var(--turquoise));
         }
 
-        @keyframes floatButterfly {
-            0% {
-                transform: translate(0, 0) rotate(0deg) scale(1);
-                opacity: 0.8;
+        /* Efecto de aleteo suave */
+        @keyframes gentleFlap {
+            0%, 100% {
+                transform: rotate(0deg) scale(1);
             }
             25% {
-                transform: translate(calc(100vw * 0.4), calc(100vh * 0.3)) rotate(180deg) scale(1.1);
-                opacity: 1;
+                transform: rotate(2deg) scale(1.02);
             }
             50% {
-                transform: translate(calc(100vw * 0.2), calc(100vh * 0.6)) rotate(360deg) scale(0.9);
-                opacity: 0.7;
+                transform: rotate(0deg) scale(1);
             }
             75% {
-                transform: translate(calc(100vw * 0.6), calc(100vh * 0.4)) rotate(540deg) scale(1.05);
-                opacity: 0.9;
+                transform: rotate(-2deg) scale(0.98);
             }
-            100% {
-                transform: translate(0, 0) rotate(720deg) scale(1);
-                opacity: 0.8;
-            }
-        }
-
-        @keyframes flapLeft {
-            0% { transform: rotate(35deg) scaleY(1); }
-            100% { transform: rotate(55deg) scaleY(1.1); }
-        }
-
-        @keyframes flapRight {
-            0% { transform: rotate(-35deg) scaleY(1); }
-            100% { transform: rotate(-55deg) scaleY(1.1); }
         }
 
         /* --- Info Card Layout --- */
@@ -415,32 +387,115 @@
         const iconPlay = document.getElementById('icon-play');
         const iconPause = document.getElementById('icon-pause');
         const butterflyContainer = document.getElementById('butterflyContainer');
+        
+        // GIF específico que proporcionaste
+        const butterflyGif = 'https://i.pinimg.com/originals/a2/74/4a/a2744af2ff7449cb1d237e45e5b6e20e.gif';
 
+        // Crear trayectorias de vuelo suaves
+        function createFlightPath(butterfly, index) {
+            const colors = ['black', 'blue', 'red', 'turquoise'];
+            const colorClass = colors[index % colors.length];
+            butterfly.className = `butterfly ${colorClass}`;
+            
+            // Tamaño más variado pero no tan grande
+            const size = 25 + Math.random() * 25; // 25-50px
+            butterfly.style.width = `${size}px`;
+            butterfly.style.height = `${size}px`;
+            
+            // Crear imagen GIF
+            const img = document.createElement('img');
+            img.src = butterflyGif;
+            img.alt = 'Mariposa';
+            img.style.animationDuration = `${1 + Math.random() * 0.5}s`;
+            
+            butterfly.appendChild(img);
+            
+            // Posición inicial aleatoria
+            const startX = Math.random() * 100;
+            const startY = Math.random() * 100;
+            butterfly.style.left = `${startX}%`;
+            butterfly.style.top = `${startY}%`;
+            
+            // Opacidad aleatoria
+            butterfly.style.opacity = `${0.6 + Math.random() * 0.3}`;
+            
+            butterflyContainer.appendChild(butterfly);
+            
+            // Animar con física mejorada
+            animateButterfly(butterfly, startX, startY, index);
+        }
+        
+        function animateButterfly(butterfly, startX, startY, index) {
+            let x = startX;
+            let y = startY;
+            let vx = (Math.random() - 0.5) * 0.3; // Velocidad inicial X
+            let vy = (Math.random() - 0.5) * 0.3; // Velocidad inicial Y
+            let angle = 0;
+            
+            // Cada mariposa tiene un patrón único basado en su índice
+            const frequency = 0.002 + (index % 5) * 0.001;
+            const amplitude = 0.5 + (index % 3) * 0.3;
+            
+            function updatePosition() {
+                // Movimiento sinusoidal suave (como vuelo real)
+                const time = Date.now() * 0.001;
+                const offsetX = Math.sin(time * frequency + index) * amplitude;
+                const offsetY = Math.cos(time * frequency * 0.7 + index) * amplitude * 0.7;
+                
+                // Actualizar posición con física
+                x += vx + offsetX * 0.1;
+                y += vy + offsetY * 0.1;
+                
+                // Rebote suave en los bordes (sin teletransportación)
+                if (x <= 0 || x >= 100) {
+                    vx *= -0.8; // Rebote con pérdida de energía
+                    x = x <= 0 ? 0 : 100;
+                }
+                if (y <= 0 || y >= 100) {
+                    vy *= -0.8; // Rebote con pérdida de energía
+                    y = y <= 0 ? 0 : 100;
+                }
+                
+                // Variaciones aleatorias suaves en la velocidad (como viento)
+                if (Math.random() < 0.01) {
+                    vx += (Math.random() - 0.5) * 0.05;
+                    vy += (Math.random() - 0.5) * 0.05;
+                }
+                
+                // Limitar velocidad máxima
+                const speed = Math.sqrt(vx * vx + vy * vy);
+                const maxSpeed = 0.4;
+                if (speed > maxSpeed) {
+                    vx = (vx / speed) * maxSpeed;
+                    vy = (vy / speed) * maxSpeed;
+                }
+                
+                // Calcular ángulo basado en la dirección
+                angle = Math.atan2(vy, vx) * (180 / Math.PI);
+                
+                // Aplicar transformación suave
+                butterfly.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+                butterfly.style.left = `${x}%`;
+                butterfly.style.top = `${y}%`;
+                
+                // Solicitar siguiente frame
+                requestAnimationFrame(updatePosition);
+            }
+            
+            // Iniciar animación
+            updatePosition();
+        }
+        
         function createButterflies() {
-            const colors = ['black', 'lilac', 'blue', 'white'];
-            const numberOfButterflies = 15;
+            // Solo 8 mariposas (no tan cargado)
+            const numberOfButterflies = 8;
             
             for (let i = 0; i < numberOfButterflies; i++) {
                 const butterfly = document.createElement('div');
-                const colorClass = colors[Math.floor(Math.random() * colors.length)];
-                butterfly.className = `butterfly ${colorClass}`;
-                
-                butterfly.style.left = `${Math.random() * 100}%`;
-                butterfly.style.top = `${Math.random() * 100}%`;
-                
-                const size = 25 + Math.random() * 35;
-                butterfly.style.width = `${size}px`;
-                butterfly.style.height = `${size}px`;
-                
-                const body = document.createElement('div');
-                body.className = 'body';
-                butterfly.appendChild(body);
-                
-                const duration = 18 + Math.random() * 20;
-                const delay = Math.random() * 5;
-                butterfly.style.animation = `floatButterfly ${duration}s linear ${delay}s infinite`;
-                
-                butterflyContainer.appendChild(butterfly);
+                // Retraso escalonado para que no aparezcan todas a la vez
+                setTimeout(() => {
+                    createFlightPath(butterfly, i);
+                }, i * 300);
             }
         }
 
@@ -479,27 +534,19 @@
             }
         }
     </script>
-<script>
-document.addEventListener('contextmenu', e => e.preventDefault());
+    <script>
+        document.addEventListener('contextmenu', e => e.preventDefault());
 
-document.addEventListener('keydown', function (e) {
-    // Ctrl+U
-    if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) e.preventDefault();
+        document.addEventListener('keydown', function (e) {
+            // Ctrl+U
+            if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) e.preventDefault();
 
-    // Ctrl+Shift+I (DevTools)
-    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
+            // Ctrl+Shift+I (DevTools)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
 
-    // F12
-    if (e.key === 'F12') e.preventDefault();
-});
-</script>
+            // F12
+            if (e.key === 'F12') e.preventDefault();
+        });
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
